@@ -15,7 +15,8 @@ app.use(express.json());
 app.use(express.static('../')); // Serve the frontend from the parent directory
 
 // File Upload Setup
-const upload = multer({ dest: 'uploads/' });
+// File Upload Setup (Memory Storage for Serverless)
+const upload = multer({ storage: multer.memoryStorage() });
 
 // --- IN-MEMORY DATABASE (Academic Focus) ---
 // --- PERSISTENCE LAYER ---
@@ -458,14 +459,13 @@ app.post('/api/upload_handwritten', upload.single('file'), async (req, res) => {
         const geminiKey = process.env.GEMINI_API_KEY;
         const openAIKey = process.env.OPENAI_API_KEY;
 
-        // Fix: Read from disk since multer is using { dest: 'uploads/' }
-        const filePath = req.file.path;
-        const fileData = fs.readFileSync(filePath);
-        const base64Image = fileData.toString('base64');
+        // Use parsing from Memory Buffer
+        if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+        const base64Image = req.file.buffer.toString('base64');
         const mimeType = req.file.mimetype;
 
-        // Clean up immediately (optional but good practice)
-        // fs.unlinkSync(filePath); // Keep for now or delete
+        // No file cleanup needed for memory storage
 
         // OPTION 1: GOOGLE GEMINI (Recommended for Hackathon - Free Tier)
         if (geminiKey) {
@@ -564,7 +564,13 @@ app.post('/api/whatsapp', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Course Pilot Server running at http://localhost:${port}`);
-    console.log(`Open http://localhost:${port}/index.html to start your flight plan`);
-});
+// Export for Vercel/Serverless
+module.exports = app;
+
+// Only start server if running directly (dev/local)
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Course Pilot Server running at http://localhost:${port}`);
+        console.log(`Open http://localhost:${port}/index.html to start your flight plan`);
+    });
+}
