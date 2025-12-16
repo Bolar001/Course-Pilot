@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Pilot - Navigate Your Studies</title>
+    <!-- Import Modern Font: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- MathJax for Engineering Formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            /* Indigo 600 */
+            --primary-hover: #4338ca;
+            --accent: #8b5cf6;
+            /* Violet 500 */
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Navbar */
+        nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--text-main);
+        }
+
+        .badge {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-weight: 500;
+        }
+
+        /* Main Layout */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 0;
+            height: calc(100vh - 70px);
+        }
+
+        /* Sidebar - Upload & Controls */
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            overflow-y: auto;
+        }
+
+        /* --- AGENT MEMORY VISUALIZATION --- */
+        .agent-memory {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .memory-title {
+            font-weight: 700;
+            color: #0369a1;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .memory-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            color: #334155;
+        }
+
+        /* ---------------------------------- */
+
+        .section-title {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* File Upload */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 1rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fdfdfd;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.active {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-text {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-status {
+            display: none;
+            background: #f1f5f9;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            /* Fix: Overlap removed */
+        }
+
+        .file-status.show {
+            display: flex;
+        }
+
+        .file-icon {
+            color: var(--primary);
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: var(--text-muted);
+        }
+
+        /* Chat Area */
+        .chat-area {
+            background: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            /* Fix for scrolling */
+            min-height: 0;
+            /* Important for nested flex scroll */
+        }
+
+        .messages {
+            flex: 1;
+            padding: 2rem;
+            padding-bottom: 6rem;
+            /* Extra room for scrolling */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            scroll-behavior: smooth;
+            width: 100%;
+        }
+
+        .message {
+            max-width: 85%;
+            animation: fadeIn 0.3s ease-out;
+            flex-shrink: 0;
+            /* Fix: Prevent shrinking */
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem 1rem 0 1rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: white;
+            color: var(--text-main);
+            padding: 0;
+            /* Container for structured content */
+            border-radius: 0 1rem 1rem 1rem;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .ai-content {
+            padding: 1.5rem;
+        }
+
+        .ai-header {
+            background: linear-gradient(to right, #f8fafc, #fff);
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .meta-logo {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #0064e0, #0668E1, #007CEA);
+            border-radius: 50%;
+        }
+
+        /* Quiz Styles within Chat */
+        .quiz-option {
+            display: block;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            background: #f8fafc;
+            border-color: var(--primary);
+        }
+
+        .quiz-option.correct {
+            background: #ecfdf5;
+            border-color: #10b981;
+            color: #047857;
+        }
+
+        .quiz-option.incorrect {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+
+        /* Loading Indicator */
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.25rem;
+            margin-left: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #cbd5e1;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+                /* Enable scrolling for mobile layout */
+                height: auto;
+                overflow-y: auto;
+                display: block;
+            }
+
+            .sidebar {
+                padding: 1.5rem;
+            }
+
+            .chat-area {
+                display: none;
+            }
+
+            /* Hide chat on mobile for demo or make it stack */
+            /* For this demo, let's keep it desktop focused or stack */
+            .sidebar {
+                height: auto;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .chat-area {
+                display: flex;
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login / Identity Modal -->
+    <!-- Login / Identity Modal -->
+    <div id="loginModal"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,1); z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+
+        <div style="width:100%; max-width:400px; padding:2rem; text-align:center;">
+            <div style="font-size:3.5rem; margin-bottom:1rem;">✈️</div>
+            <h1 style="font-size:2rem; font-weight:700; color:#1e293b; margin-bottom:0.5rem;">Course Pilot</h1>
+            <p style="color:#64748b; margin-bottom:2.5rem; font-size:1.1rem;">Your AI-Powered Academic Co-Pilot</p>
+
+            <!-- Mock Google Button -->
+            <button onclick="mockGoogleLogin()"
+                style="width:100%; background:white; border:1px solid #cbd5e1; color:#1e293b; padding:0.75rem; border-radius:2rem; font-weight:500; display:flex; align-items:center; justify-content:center; gap:0.75rem; cursor:pointer; transition:all 0.2s; box-shadow:0 1px 2px 0 rgba(0,0,0,0.05);">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" style="width:20px; height:20px;"
+                    alt="G">
+                <span>Continue with Google</span>
+            </button>
+
+            <div
+                style="margin: 1.5rem 0; font-size:0.85rem; color:#94a3b8; display:flex; align-items:center; gap:1rem;">
+                <div style="flex:1; height:1px; background:#e2e8f0;"></div>
+                <span>or continue with email</span>
+                <div style="flex:1; height:1px; background:#e2e8f0;"></div>
+            </div>
+
+            <!-- Fallback Email -->
+            <form onsubmit="event.preventDefault(); login();" style="display:flex; flex-direction:column; gap:0.75rem;">
+                <input type="email" id="studentIdInput" placeholder="student@university.edu"
+                    style="width:100%; padding:0.875rem; border:1px solid #cbd5e1; border-radius:0.75rem; background:#f8fafc; font-size:0.95rem;">
+                <button type="submit" class="btn btn-primary" style="border-radius:0.75rem;">Sign In</button>
+            </form>
+
+            <p style="margin-top:2rem; font-size:0.75rem; color:#94a3b8;">
+                By continuing, you agree to our Terms of Service and Privacy Policy.<br>
+                Protected by reCAPTCHA.
+            </p>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <span style="color: var(--primary);">Course</span>Pilot <span>✈️</span>
+        </div>
+        <div style="display:flex; gap:1rem; align-items:center;">
+            <!-- Subject Selector -->
+            <select id="subjectSelect"
+                style="padding:0.5rem; border-radius:0.5rem; border:1px solid #e2e8f0; font-family:inherit;"
+                onchange="changeSubject()">
+                <option value="General">Select Subject...</option>
+                <option value="MTH101">MTH101 [Core] - Calculus</option>
+                <option value="ELE202">ELE202 [Core] - Circuit Theory</option>
+                <option value="CSC304">CSC304 [Elective] - Algorithms</option>
+                <option value="ADD_NEW">+ Add New Subject...</option>
+            </select>
+            <div id="userBadge" style="font-size:0.85rem; font-weight:600;">Guest</div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+
+            <!-- CRM / Memory Panel -->
+            <!-- Academic Profile (Replaces Gamification) -->
+            <div class="agent-memory">
+                <div class="memory-title" style="justify-content:space-between;">
+                    <span>📊 Academic Profile</span>
+                    <!-- Exam Mode Toggle -->
+                    <label
+                        style="font-size:0.7rem; display:flex; align-items:center; gap:0.25rem; font-weight:normal; cursor:pointer;">
+                        <input type="checkbox" id="examModeToggle" onchange="toggleExamMode(this)">
+                        Exam Mode ⚡
+                    </label>
+                </div>
+                <div class="memory-item">
+                    <span>Subject:</span> <span id="memSubject">Pending...</span>
+                </div>
+                <div class="memory-item" style="display:none;" id="lecturerDisplay">
+                    <span>Lecturer:</span> <span id="memLecturer" style="color:#64748b;">--</span>
+                </div>
+                <!-- Weakness Tracking -->
+                <div style="margin-top:0.5rem; border-top:1px solid #e2e8f0; padding-top:0.5rem;">
+                    <div style="font-size:0.75rem; color:#64748b; margin-bottom:0.25rem;">Detected Weaknesses:</div>
+                    <div id="weaknessList" style="display:flex; flex-wrap:wrap; gap:0.25rem;">
+                        <span
+                            style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:0.75rem; color:#94a3b8;">None
+                            detected yet</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Material Memory Section -->
+            <div id="materialLibrary" style="margin-bottom:1rem; display:none;">
+                <div class="section-title">📂 Materials</div>
+                <div id="materialList" style="display:flex; flex-direction:column; gap:0.5rem;">
+                    <!-- Items populated by JS -->
+                </div>
+            </div>
+
+            <!-- ANALYTICS: Performance Chart -->
+            <div
+                style="margin-bottom:1rem; background:white; padding:1rem; border-radius:0.75rem; border:1px solid #e2e8f0;">
+                <div class="section-title" style="margin-bottom:0.5rem;">📈 Performance</div>
+                <canvas id="gradeChart" width="100" height="60"></canvas>
+            </div>
+
+            <!-- Timetable Section -->
+
+            <!-- Timetable Section -->
+            <div style="margin-bottom:1rem;">
+                <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                    📅 Study Timetable
+                    <button class="btn btn-secondary" id="editTimetableBtn"
+                        style="width:auto; padding:2px 8px; font-size:0.6rem; height:auto;"
+                        onclick="enableTimetableEdit()">Edit</button>
+                </div>
+                <div id="timetableContainer"
+                    style="background:#fff; border:1px solid #e2e8f0; border-radius:0.5rem; padding:0.5rem; font-size:0.8rem; max-height:150px; overflow-y:auto;">
+                    <p style="color:#94a3b8; text-align:center;">Add subjects to generate plan.</p>
+                </div>
+                <button class="btn btn-secondary" style="margin-top:0.5rem; font-size:0.75rem; padding:0.5rem;"
+                    onclick="refreshTimetable()">
+                    🔄 Regenerate Plan (AI)
+                </button>
+            </div>
+
+            <div>
+                <div class="section-title">1. Upload Materials</div>
+                <div class="upload-zone" id="dropZone">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-text">Notes / Past Questions</div>
+                    <div class="upload-subtext">PDFs, Images</div>
+                    <input type="file" id="fileInput" accept=".pdf, .jpg, .png">
+                </div>
+                <!-- Handwritten Button (Moved Outside) -->
+                <button onclick="handleHandwrittenUpload()"
+                    style="width:100%; margin-top:0.5rem; padding:0.75rem; font-size:0.85rem; background:#fff; border:1px solid #cbd5e1; border-radius:0.5rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; color:#475569; font-weight:500;">
+                    ✍️ Upload Handwritten Note (Beta)
+                </button>
+                <div class="file-status" id="fileStatus">
+                    <span class="file-icon">✓</span>
+                    <span id="fileName">lecture_notes.pdf</span>
+                </div>
+
+                <!-- Focus / Context Area with Voice -->
+                <div style="margin-top:1rem;">
+                    <label
+                        style="font-size:0.8rem; font-weight:600; color:#475569; margin-bottom:0.25rem; display:flex; justify-content:space-between; align-items:center;">
+                        Target Specific Chapter/Topic:
+                        <button onclick="startVoiceInput()" style="border:none; background:none; cursor:pointer;"
+                            title="Tap to Speak">🎙️</button>
+                    </label>
+                    <input type="text" id="focusInput" placeholder="e.g. Chapter 4, Thermodynamics"
+                        style="width:100%; padding:0.6rem; border:1px solid #cbd5e1; border-radius:0.5rem; font-size:0.9rem;">
+                </div>
+            </div>
+
+            <div>
+                <div class="section-title">2. AI Actions</div>
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="handleAction('summarize')" id="btnSum">
+                        ✨ Summarize Content
+                    </button>
+                    <button class="btn btn-secondary" onclick="handleAction('explain')" id="btnExp">
+                        🎓 Explain Concepts
+                    </button>
+                    <button class="btn btn-secondary" onclick="handleAction('quiz')" id="btnQuiz">
+                        📝 Generate Quiz
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-top: auto;">
+                <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+                    Hackathon Demo Version 1.0
+                </p>
+            </div>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="chat-area">
+            <div class="messages" id="messagesContainer">
+                <!-- Welcome Message -->
+                <div class="message ai">
+                    <div class="ai-header">
+                        <div class="meta-logo"></div> Course Pilot
+                    </div>
+                    <div class="ai-content">
+                        <p>Welcome to the Cockpit! ✈️ Upload your course materials, and I will navigate you through the
+                            turbulence of your syllabus.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div class="typing-indicator" id="loader">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+
+            <!-- Chat Input Area -->
+            <div class="chat-input-area"
+                style="padding: 1rem; background: #fff; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; margin-top: auto;">
+                <button class="btn btn-secondary" style="width: auto; padding: 0.5rem 0.75rem;"
+                    onclick="document.getElementById('fileInput').click()" title="Attach File">📎</button>
+                <input type="text" id="chatInput" placeholder="Ask a question..."
+                    style="flex: 1; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-family: inherit;"
+                    onkeypress="handleChatKey(event)">
+                <button class="btn btn-primary" style="width: auto;" onclick="sendChatMessage()">Send</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Import Marked.js for Markdown Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        // --- CONFIGURATION ---
+        const USE_SERVER = true;
+        let uploadedTextContext = "";
+        let currentUser = "guest@edu.com";
+        let currentSubject = "General";
+        let isCurrentSubjectCore = false;
+        let currentLecturer = "Unknown"; // NEW: Lecturer Awareness
+
+        // --- AUTH MOCK ---
+        function mockGoogleLogin() {
+            // 1. Simulate Popup
+            const width = 500, height = 600;
+            const left = (window.innerWidth - width) / 2;
+            const top = (window.innerHeight - height) / 2;
+
+            // In a real app, this would be the actual OAuth URL
+            const fakeUrl = "about:blank";
+            const popup = window.open(fakeUrl, "Google Sign In", `width=${width},height=${height},top=${top},left=${left}`);
+
+            if (popup) {
+                popup.document.write(`
+                    <div style="font-family:'Segoe UI', sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center;">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="60" style="margin-bottom:20px;">
+                        <h3>Signing in to Course Pilot...</h3>
+                        <div style="width:30px; height:30px; border:3px solid #f3f3f3; border-top:3px solid #3498db; border-radius:50%; animation:spin 1s linear infinite; margin-top:20px;"></div>
+                        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+                    </div>
+                `);
+
+                // 2. Simulate Delay & Success
+                setTimeout(() => {
+                    popup.close();
+                    // Auto-fill and login
+                    document.getElementById('studentIdInput').value = "student@hackathon.demo";
+                    login(true); // true = via google
+                }, 2000);
+            } else {
+                alert("Please allow popups for Google Sign In");
+            }
+        }
+
+        function login(isGoogle = false) {
+            const email = document.getElementById('studentIdInput').value;
+            if (email && (email.includes('@') || isGoogle)) {
+                currentUser = email;
+                document.getElementById('userBadge').textContent = email;
+                document.getElementById('loginModal').style.display = 'none';
+
+                const welcomeMsg = isGoogle
+                    ? `<p>✅ <strong>Authenticated via Google</strong>. Welcome, ${email}.</p>`
+                    : `<p>Welcome aboard <strong>${email}</strong>. I am your Course Pilot.</p>`;
+
+                addMessage('ai', welcomeMsg);
+
+                // Init Chart
+                initCharts();
+            } else {
+                alert("Please enter a valid email to board.");
+            }
+        }
+
+        function changeSubject() {
+            const select = document.getElementById('subjectSelect');
+            const val = select.value;
+
+            if (val === 'ADD_NEW') {
+                const code = prompt("Enter Course Code (e.g. PHY101):");
+                if (!code) { select.value = currentSubject; return; }
+
+                const title = prompt("Enter Course Title (e.g. Physics):");
+                if (!title) { select.value = currentSubject; return; }
+
+                // Academic Focus: Ask if Core
+                const isCore = confirm(`Is ${code} a Core Course (compulsory)?\n\nOK = Yes\nCancel = No`);
+
+                // Lecturer Info
+                const lecturer = prompt("Optional: Enter Lecturer Name for this course (helps agent adapt style):") || "Unknown";
+
+                // Create New Option
+                const newOption = document.createElement('option');
+                newOption.value = code;
+                newOption.textContent = `${code} [${isCore ? 'Core' : 'Elective'}] - ${title}`;
+
+                // Track Core Status locally (simple map would be better but this works for demo)
+                select.insertBefore(newOption, select.lastElementChild);
+
+                select.value = code;
+                currentSubject = code;
+                isCurrentSubjectCore = isCore;
+                currentLecturer = lecturer;
+
+                // Update UI
+                updateSubjectDisplay();
+                addMessage('ai', `<p>Added <strong>${code}</strong> (${isCore ? 'Core Priority' : 'Elective'}) by ${lecturer}. Timetable updating...</p>`);
+
+                // Trigger Init
+                getAIResponse('init');
+            } else {
+                currentSubject = val;
+                // Hacky deduction
+                const text = select.options[select.selectedIndex].text;
+                isCurrentSubjectCore = text.includes('[Core]');
+
+                updateSubjectDisplay();
+                addMessage('ai', `<p>Focus switched to <strong>${currentSubject}</strong>.</p>`);
+
+                getAIResponse('init');
+            }
+        }
+
+        function updateSubjectDisplay() {
+            document.getElementById('memSubject').textContent = currentSubject;
+            document.getElementById('memLecturer').textContent = currentLecturer !== "Unknown" ? currentLecturer : "--";
+            document.getElementById('lecturerDisplay').style.display = currentLecturer !== "Unknown" ? "flex" : "none";
+        }
+
+        // --- NEW: Exam Toggle ---
+        async function toggleExamMode(checkbox) {
+            const enabled = checkbox.checked;
+            try {
+                const res = await fetch('http://localhost:3000/api/toggle_exam', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUser, enabled })
+                });
+                const data = await res.json();
+
+                if (enabled) {
+                    addMessage('ai', `<div style="background:#4ade80; color:#064e3b; padding:10px; border-radius:8px;"><strong>⚡ EXAM MODE ACTIVATED</strong><br>Prioritizing high-yield topics and past questions. Explanations will be concise.</div>`);
+                } else {
+                    addMessage('ai', `<p>Returning to normal detailed study mode.</p>`);
+                }
+                if (data.timetable) renderTimetable(data.timetable);
+            } catch (e) { console.error(e); }
+        }
+
+        // --- NEW: Handwritten Notes ---
+        async function handleHandwrittenUpload() {
+            // Simulate file click
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                if (e.target.files[0]) {
+                    const file = e.target.files[0];
+                    addMessage('user', `✍️ Uploading Handwritten Note: ${file.name}`);
+
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    try {
+                        const res = await fetch('http://localhost:3000/api/upload_handwritten', { method: 'POST', body: formData });
+                        const data = await res.json();
+                        addMessage('ai', `<p>Processed Note: ${data.textPreview}</p>`);
+                        uploadedTextContext = data.textPreview; // Set as context
+                    } catch (e) {
+                        console.error(e);
+                        addMessage('ai', `<p>⚠️ <strong>Upload Failed:</strong> Connection error. Ensure server is running.</p>`);
+                    }
+                }
+            };
+            input.click();
+        }
+
+        // --- API HANDLERS ---
+        async function uploadFileToServer(file) {
+            if (!USE_SERVER) return "Draft mode text context";
+            const formData = new FormData();
+            formData.append('file', file);
+            // Add metadata for memory
+            formData.append('userId', currentUser);
+            formData.append('subjectId', currentSubject);
+
+            try {
+                const res = await fetch('http://localhost:3000/api/upload', { method: 'POST', body: formData });
+                const data = await res.json();
+
+                // Update Material List if returned
+                if (data.materials) renderMaterialLibrary(data.materials);
+
+                return data.textPreview || "";
+            } catch (e) {
+                console.error("Server Error:", e);
+                addMessage('ai', "<p>⚠️ <strong>Server Connection Failed.</strong></p>");
+                return null;
+            }
+        }
+
+        async function getAIResponse(type) {
+            const loaderElem = document.getElementById('loader');
+            if (type !== 'init' && loaderElem) {
+                loaderElem.style.display = 'flex';
+                scrollToBottom();
+            }
+
+            try {
+                const res = await fetch('http://localhost:3000/api/ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: type,
+                        text: uploadedTextContext,
+                        userId: currentUser,
+                        subjectId: currentSubject,
+                        focusTopic: document.getElementById('focusInput').value,
+                        isCore: isCurrentSubjectCore,
+                        lecturer: currentLecturer // Pass lecturer info
+                    })
+                });
+                const data = await res.json();
+
+                if (type !== 'init' && loaderElem) loaderElem.style.display = 'none';
+
+                // Update Academic Profile (Weaknesses)
+                if (data.weaknesses) renderWeaknesses(data.weaknesses);
+                // Update Timetable
+                if (data.timetable) renderTimetable(data.timetable);
+                // Sync Exam Mode
+                if (data.examMode !== undefined) document.getElementById('examModeToggle').checked = data.examMode;
+                // Sync Materials
+                if (data.materials) renderMaterialLibrary(data.materials);
+
+                return data;
+            } catch (e) {
+                console.error(e);
+                if (type !== 'init' && loaderElem) loaderElem.style.display = 'none';
+                return { result: "Error connecting to AI Backend." };
+            }
+        }
+
+        function renderWeaknesses(weaknesses) {
+            const wList = document.getElementById('weaknessList');
+            if (!weaknesses || weaknesses.length === 0) {
+                wList.innerHTML = '<span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:0.75rem; color:#94a3b8;">None detected</span>';
+            } else {
+                wList.innerHTML = weaknesses.map(w =>
+                    `<span style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:2px 6px; border-radius:4px; font-size:0.75rem;">${w}</span>`
+                ).join('');
+            }
+        }
+
+        // Render Timetable (With Edit Capability)
+        let isTimetableEditable = false;
+        function enableTimetableEdit() {
+            isTimetableEditable = !isTimetableEditable;
+            // REMOVED duplicate toggle here
+            if (!isTimetableEditable) {
+                // Save on exit
+                saveTimetable();
+            }
+            renderTimetable(currentTimetableData);
+        }
+
+        // --- NEW: Render Material Library ---
+        function renderMaterialLibrary(list) {
+            const container = document.getElementById('materialLibrary');
+            const listElem = document.getElementById('materialList');
+            if (!list || list.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'block';
+
+            // Reverse to show newest first
+            const sorted = [...list].reverse();
+
+            listElem.innerHTML = sorted.map(m => `
+        <div onclick="selectMaterial('${m.name}', '${m.preview.replace(/'/g, "\\'")}')" 
+             style="background:white; border:1px solid #e2e8f0; padding:0.5rem; border-radius:0.5rem; cursor:pointer; font-size:0.8rem; display:flex; align-items:center; gap:0.5rem; transition:all 0.2s;">
+            <span>📄</span>
+            <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                ${m.name}
+                <div style="font-size:0.7rem; color:#94a3b8;">${new Date(m.date).toLocaleDateString()}</div>
+            </div>
+        </div>
+    `).join('');
+        }
+
+        function selectMaterial(name, text) {
+            addMessage('user', `Switching context to: ${name}`);
+            uploadedTextContext = text;
+            document.getElementById('fileName').textContent = name;
+            document.getElementById('fileStatus').classList.add('show');
+            // Hide big uploader
+            document.getElementById('dropZone').style.display = 'none';
+            addMessage('ai', `<p>Context switched to <strong>${name}</strong>. Ready.</p>`);
+        }
+
+        // Global State for Timetable
+        let currentTimetableData = [];
+
+        // --- NEW: Render Material Library ---
+        function renderMaterialLibrary(list) {
+            const container = document.getElementById('materialLibrary');
+            const listElem = document.getElementById('materialList');
+            if (!list || list.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'block';
+
+            // Reverse to show newest first
+            const sorted = [...list].reverse();
+
+            listElem.innerHTML = sorted.map(m => `
+        <div onclick="selectMaterial('${m.name}', '${m.preview.replace(/'/g, "\\'")}')" 
+             style="background:white; border:1px solid #e2e8f0; padding:0.5rem; border-radius:0.5rem; cursor:pointer; font-size:0.8rem; display:flex; align-items:center; gap:0.5rem; transition:all 0.2s;">
+            <span>📄</span>
+            <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                ${m.name}
+                <div style="font-size:0.7rem; color:#94a3b8;">${new Date(m.date).toLocaleDateString()}</div>
+            </div>
+        </div>
+    `).join('');
+        }
+
+        function selectMaterial(name, text) {
+            addMessage('user', `Switching context to: ${name}`);
+            uploadedTextContext = text;
+            document.getElementById('fileName').textContent = name;
+            document.getElementById('fileStatus').classList.add('show');
+            // Hide big uploader - REMOVED to allow multi-upload access
+            // document.getElementById('dropZone').style.display = 'none';
+            addMessage('ai', `<p>Context switched to <strong>${name}</strong>. Ready.</p>`);
+        }
+
+        async function saveTimetable() {
+            try {
+                const res = await fetch('http://localhost:3000/api/update_timetable', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUser, newTimetable: currentTimetableData })
+                });
+                addMessage('ai', '<div style="font-size:0.8rem; color:#059669;">Timetable saved successfully.</div>');
+            } catch (e) {
+                console.error(e);
+                alert("Failed to save timetable");
+            }
+        }
+
+        function updateSlot(idx, field, value) {
+            if (currentTimetableData[idx]) {
+                currentTimetableData[idx][field] = value;
+            }
+        }
+
+        function addTimetableSlot() {
+            currentTimetableData.push({
+                day: "Mon",
+                time: "9:00 AM",
+                subject: "New Subject",
+                focus: "General Study"
+            });
+            renderTimetable(currentTimetableData);
+        }
+
+        function renderTimetable(slots) {
+            currentTimetableData = slots || []; // Sync state
+            const container = document.getElementById('timetableContainer');
+
+            if (!currentTimetableData || currentTimetableData.length === 0) {
+                if (isTimetableEditable) {
+                    container.innerHTML = `<button class="btn btn-secondary" onclick="addTimetableSlot()" style="width:100%; font-size:0.8rem;">+ Add First Slot</button>`;
+                } else {
+                    container.innerHTML = '<p style="color:#94a3b8; text-align:center;">Add subjects to generate plan.</p>';
+                }
+                return;
+            }
+
+            let html = '<div style="display:grid; grid-template-columns: 45px 65px 1fr 20px; gap:0.25rem; font-weight:600; color:#64748b; margin-bottom:0.5rem;"><span>Day</span><span>Time</span><span>Subject</span><span></span></div>';
+
+            currentTimetableData.forEach((slot, idx) => {
+                let rowContent = '';
+
+                if (isTimetableEditable) {
+                    // EDIT MODE
+                    rowContent = `
+                        <input type="text" value="${slot.day}" style="width:100%; padding:2px; font-size:0.7rem; border:1px solid #cbd5e1; border-radius:4px;" onchange="updateSlot(${idx}, 'day', this.value)">
+                        <input type="text" value="${slot.time}" style="width:100%; padding:2px; font-size:0.7rem; border:1px solid #cbd5e1; border-radius:4px;" onchange="updateSlot(${idx}, 'time', this.value)">
+                        <div style="display:flex; flex-direction:column; gap:2px;">
+                            <input type="text" value="${slot.subject}" style="width:100%; padding:2px; font-size:0.75rem; border:1px solid #cbd5e1; border-radius:4px; font-weight:500;" onchange="updateSlot(${idx}, 'subject', this.value)">
+                            <input type="text" value="${slot.focus}" style="width:100%; padding:2px; font-size:0.65rem; color:#64748b; border:1px solid #e2e8f0; border-radius:4px;" onchange="updateSlot(${idx}, 'focus', this.value)">
+                        </div>
+                        <span style="cursor:pointer; color:red; font-size:1.2rem; line-height:1;" onclick="removeTimetableSlot(${idx})">×</span>
+                     `;
+                } else {
+                    // VIEW MODE
+                    rowContent = `
+                        <span style="color:#475569;">${slot.day}</span>
+                        <span style="font-size:0.7rem; color:#94a3b8;">${slot.time.split(' ')[0]}</span>
+                        <div>
+                            <div style="color:#0f172a; font-weight:500;">${slot.subject}</div>
+                            <div style="font-size:0.65rem; color:${slot.focus.includes('Weakness') ? '#ef4444' : '#64748b'};">${slot.focus}</div>
+                        </div>
+                     `;
+                }
+
+                html += `
+                <div style="display:grid; grid-template-columns: 45px 65px 1fr 20px; gap:0.25rem; align-items:center; border-bottom:1px solid #f1f5f9; padding:0.25rem 0;">
+                    ${rowContent}
+                </div>`;
+            });
+
+            if (isTimetableEditable) {
+                html += `<button class="btn btn-secondary" onclick="addTimetableSlot()" style="width:100%; margin-top:0.5rem; font-size:0.75rem;">+ Add Slot</button>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Helper for manual refresh
+        function refreshTimetable() {
+            getAIResponse('init');
+        }
+
+        async function removeTimetableSlot(idx) {
+            currentTimetableData.splice(idx, 1);
+            renderTimetable(currentTimetableData);
+        }
+
+        // --- ANALYTICS CHARTS ---
+        let gradeChart;
+        function initCharts() {
+            const ctx = document.getElementById('gradeChart').getContext('2d');
+            gradeChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Quiz Score (%)',
+                        data: [],
+                        borderColor: '#4F46E5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        async function updateChart() {
+            if (!gradeChart || !currentUser) return;
+
+            try {
+                // Real DB Fetch
+                const res = await fetch(`/api/analytics?userId=${encodeURIComponent(currentUser)}`);
+                const data = await res.json();
+
+                // Map history to chart
+                // history: [{score: 100, date: ...}]
+                const labels = data.history.map((h, i) => `Q${i + 1}`);
+                const scores = data.history.map(h => h.score);
+
+                gradeChart.data.labels = labels;
+                gradeChart.data.datasets[0].data = scores;
+                gradeChart.update();
+
+            } catch (e) {
+                console.error("Failed to load analytics", e);
+            }
+        }
+
+        // --- UI LOGIC ---
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const fileStatus = document.getElementById('fileStatus');
+        const fileNameDisplay = document.getElementById('fileName');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const loader = document.getElementById('loader');
+
+        let isFileUploaded = false;
+
+        // File Selection
+        dropZone.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON') fileInput.click();
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFileUpload(e.target.files[0]);
+        });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('active'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('active'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault(); dropZone.classList.remove('active');
+            if (e.dataTransfer.files.length > 0) handleFileUpload(e.dataTransfer.files[0]);
+        });
+
+
+        async function handleFileUpload(file) {
+            isFileUploaded = true;
+            fileNameDisplay.textContent = file.name;
+            // dropZone.style.display = 'none'; // REMOVED: Keep visible for multiple uploads
+            fileStatus.classList.add('show'); // Show compact status
+
+            addMessage('user', `Uploaded: ${file.name}`);
+            uploadedTextContext = await uploadFileToServer(file);
+
+            setTimeout(() => {
+                addMessage('ai', `<p>Processed <strong>${file.name}</strong>. Ready for analysis.</p>`);
+            }, 800);
+        }
+
+        // Action Handling
+        async function handleAction(type) {
+            if (!isFileUploaded && type !== 'quiz') {
+                // Allow quiz init?
+            }
+            if (!isFileUploaded && type !== 'quiz') { alert("Please upload a file or text first!"); return; }
+
+            const focus = document.getElementById('focusInput').value;
+            const actionLabels = { 'summarize': 'Summarize', 'explain': 'Explain', 'quiz': 'Quiz Me' };
+            addMessage('user', focus ? `${actionLabels[type]} (Focus: ${focus})` : actionLabels[type]);
+
+            const data = await getAIResponse(type);
+
+            let contentToRender = data.result || data;
+
+            // Render JSON Quiz
+            try {
+                let jsonStr = contentToRender.trim();
+                // Strip Markdown Code Blocks if present
+                if (jsonStr.includes('```json')) {
+                    jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '');
+                }
+                if (jsonStr.startsWith('[')) {
+                    const jsonQuiz = JSON.parse(jsonStr);
+                    if (Array.isArray(jsonQuiz)) contentToRender = renderQuizFromJSON(jsonQuiz);
+                }
+            } catch (e) { console.log("Not a JSON quiz", e); }
+
+            addMessage('ai', contentToRender);
+            if (window.MathJax) setTimeout(() => {
+                MathJax.typesetPromise().then(() => scrollToBottom());
+            }, 100);
+
+            // Academic Suggestion
+            if (data.suggestion) {
+                setTimeout(() => {
+                    addMessage('ai', `
+                        <div style="background:#f0f9ff; border:1px solid #bae6fd; padding:10px; border-radius:8px;">
+                            <strong>👨‍🏫 Academic Advisor:</strong><br/>
+                            ${data.suggestion.message}
+                            ${data.suggestion.action ? `<button class="btn btn-secondary" style="margin-top:5px; font-size:0.8rem;" onclick="handleAction('${data.suggestion.action}')">Proceed</button>` : ''}
+                        </div>
+                    `);
+                }, 1500);
+            }
+        }
+
+        // --- QUIZ RENDERER (Updated for Reporting) ---
+        function renderQuizFromJSON(quizArray) {
+            // Wrap in div to ensure addMessage treats it as HTML (not Markdown)
+            let html = '<div><h3>📝 Assessment</h3><div style="display:flex; flex-direction:column; gap:1rem;">';
+            const labels = ['A', 'B', 'C', 'D'];
+            quizArray.forEach((q, idx) => {
+                html += `
+                <div class="quiz-card" style="background:#f8fafc; padding:1rem; border-radius:0.5rem; border:1px solid #e2e8f0;">
+                    <p style="font-weight:600; margin-bottom:0.5rem;">${idx + 1}. ${q.question}</p>
+                    ${q.options.map((opt, i) => `
+                        <div class="quiz-option"
+                             onclick="checkAnswer(this, ${opt === q.answer}, '${q.explanation.replace(/'/g, "\\'")}', '${document.getElementById('focusInput').value || 'General'}')">
+                            <span style="font-weight:600; color:var(--primary); margin-right:0.5rem;">${labels[i] || ''}.</span> ${opt}
+                        </div>
+                    `).join('')}
+                    <div class="explanation" style="display:none; margin-top:0.5rem; font-size:0.9rem; color:#059669; background:#ecfdf5; padding:0.5rem; border-radius:0.5rem;"></div>
+                </div>`;
+            });
+            html += '</div></div>';
+            return html;
+        }
+
+        async function checkAnswer(el, isCorrect, explanation, topic) {
+            if (el.dataset.answered) return;
+            el.dataset.answered = "true";
+
+            const p = el.parentElement;
+            const expl = p.querySelector('.explanation');
+
+            if (isCorrect) {
+                el.classList.add('correct');
+                expl.textContent = "✅ Correct! " + explanation;
+                // Report Success (100%)
+                await reportQuizScore(100, topic);
+            } else {
+                el.classList.add('incorrect');
+                expl.textContent = "❌ Incorrect. " + explanation;
+                expl.style.color = "#b91c1c";
+                expl.style.background = "#fef2f2";
+                // Report Failure (0%) - triggers weakness detection
+                await reportQuizScore(0, topic);
+            }
+            expl.style.display = 'block';
+            scrollToBottom();
+        }
+
+        async function reportQuizScore(score, topic) {
+            try {
+                await fetch('http://localhost:3000/api/report_quiz', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: currentUser,
+                        subjectId: currentSubject,
+                        score: score,
+                        focusTopic: topic
+                    })
+                });
+                // We could refresh profile here, but let's wait for next interaction or manual refresh to avoid jumpy UI
+            } catch (e) { console.error("Reporting Error", e); }
+        }
+
+        // Helper to add messages with MARKED.JS support
+        function addMessage(sender, content) {
+            const div = document.createElement('div');
+            div.className = `message ${sender}`;
+
+            let innerHTML = "";
+            if (sender === 'ai') {
+                // Parse Markdown if it looks like text (not already HTML structure like the welcome msg)
+                // For simplicity, we parse everything, but careful with existing HTML
+                // Actually, let's only parse if it doesn't start with <div (which are our widgets)
+                // But LLM response is usually text.
+                if (content.trim().startsWith('<div') || content.trim().startsWith('<p>')) {
+                    // Assume it's already customized HTML from our code
+                    innerHTML = `<div class="ai-header"><div class="meta-logo"></div> Course Pilot</div><div class="ai-content">${content}</div>`;
+                } else {
+                    // Safe Parse with Marked
+                    const parsedHtml = marked.parse(content);
+                    innerHTML = `<div class="ai-header"><div class="meta-logo"></div> Course Pilot</div><div class="ai-content">${parsedHtml}</div>`;
+                }
+            } else {
+                innerHTML = content;
+            }
+
+            div.innerHTML = innerHTML;
+            messagesContainer.appendChild(div);
+            scrollToBottom();
+        }
+
+        // Setup Scroll to Bottom
+        function scrollToBottom() {
+            setTimeout(() => {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 50);
+        }
+
+        // Voice
+        function startVoiceInput() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Voice input not supported in this browser. Try Chrome.");
+                return;
+            }
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.start();
+
+            const btn = document.querySelector('button[title="Tap to Speak"]');
+            btn.textContent = "👂";
+
+            recognition.onresult = function (event) {
+                const speech = event.results[0][0].transcript;
+                document.getElementById('focusInput').value = speech;
+                btn.textContent = "🎙️";
+            };
+
+            recognition.onerror = function (e) {
+                console.error(e);
+                btn.textContent = "🎙️";
+                alert("Voice Error. Check microphone permissions.");
+            };
+        }
+
+        // Share
+        function shareToWhatsApp(type, content) {
+            const rawText = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            const textToShare = encodeURIComponent(`*EduCoach AI* \n\n${rawText}\n\n_Sent via EduCoach_`);
+            window.open(`https://wa.me/?text=${textToShare}`, '_blank');
+        }
+
+        // --- CHAT LOGIC ---
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Clear Input
+            input.value = "";
+
+            // Add User Message
+            addMessage('user', message);
+
+            // Show Loader
+            const loaderElem = document.getElementById('loader');
+            loaderElem.style.display = 'flex';
+            scrollToBottom();
+
+            try {
+                const res = await fetch('http://localhost:3000/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        userId: currentUser,
+                        subjectId: currentSubject,
+                        focusTopic: document.getElementById('focusInput').value,
+                        isCore: isCurrentSubjectCore,
+                        lecturer: currentLecturer,
+                        textContext: uploadedTextContext
+                    })
+                });
+                const data = await res.json();
+
+                loaderElem.style.display = 'none';
+
+                // Render Response
+                addMessage('ai', data.result);
+                if (window.MathJax) setTimeout(() => {
+                    MathJax.typesetPromise().then(() => scrollToBottom());
+                }, 100);
+
+                // Suggestions
+                if (data.suggestion) {
+                    setTimeout(() => {
+                        addMessage('ai', `
+                            <div style="background:#f0f9ff; border:1px solid #bae6fd; padding:10px; border-radius:8px;">
+                                <strong>👨‍🏫 Academic Advisor:</strong><br/>
+                                ${data.suggestion.message}
+                                ${data.suggestion.action ? `<button class="btn btn-secondary" style="margin-top:5px; font-size:0.8rem;" onclick="handleAction('${data.suggestion.action}')">Proceed</button>` : ''}
+                            </div>
+                        `);
+                    }, 1500);
+                }
+
+                // Update Profile if needed
+                if (data.weaknesses) renderWeaknesses(data.weaknesses);
+
+            } catch (e) {
+                console.error(e);
+                loaderElem.style.display = 'none';
+                addMessage('ai', "Error connecting to Pilot.");
+            }
+        }
+
+        function handleChatKey(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        }
+    </script>
+</body>
+
+</html>

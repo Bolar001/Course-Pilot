@@ -1,0 +1,24 @@
+{
+  "garubaridwanullah@gmail.com": {
+    "profile": {
+      "name": "garubaridwanullah",
+      "focusAreas": [],
+      "examMode": false,
+      "studyPace": "moderate",
+      "preferredTime": "morning"
+    },
+    "timetable": [],
+    "quizHistory": []
+  },
+  "guest@edu.com": {
+    "profile": {
+      "name": "guest",
+      "focusAreas": [],
+      "examMode": false,
+      "studyPace": "moderate",
+      "preferredTime": "morning"
+    },
+    "timetable": [],
+    "quizHistory": []
+  }
+}
