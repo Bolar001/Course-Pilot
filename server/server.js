@@ -202,7 +202,8 @@ async function generateAIResponse(text, promptType) {
             return response.data.choices[0].message.content;
         } catch (e) {
             console.error("AI Error:", e.response ? e.response.data : e.message);
-            return "⚠️ AI service temporarily unavailable. Please try again.";
+            // Return actual error to frontend for debugging
+            return `⚠️ AI Error: ${e.response ? JSON.stringify(e.response.data) : e.message}`;
         }
     }
     return "[Simulation] Add AI_API_KEY to .env to enable real Llama 3.";
