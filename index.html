@@ -111,6 +111,14 @@
             font-weight: 500;
         }
 
+        #userBadge {
+            max-width: 160px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            display: inline-block;
+        }
+
         /* Main Layout */
         main {
             height: calc(100vh - 64px);
@@ -1569,6 +1577,23 @@
         function handleChatKey(e) {
             if (e.key === 'Enter') sendChatMessage();
         }
+
+        /* Close sidebar when tapping outside (mobile only) */
+        document.addEventListener("click", function (e) {
+            const sidebar = document.querySelector(".sidebar");
+            const btn = document.querySelector(".menu-toggle");
+
+            if (!sidebar) return;
+
+            const isSidebarOpen = document.body.classList.contains("sidebar-open");
+            const clickedInsideSidebar = sidebar.contains(e.target);
+            const clickedButton = btn && btn.contains(e.target);
+
+            // Close if open, clicked outside sidebar, and NOT clicking the toggle button
+            if (isSidebarOpen && !clickedInsideSidebar && !clickedButton) {
+                document.body.classList.remove("sidebar-open");
+            }
+        });
     </script>
 </body>
 
