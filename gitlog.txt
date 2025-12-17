@@ -1,0 +1,119 @@
+commit ebee13d725c24344cf6088b50c361275e279ae69
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 18:44:54 2025 +0100
+
+    Fix: Button Clickability & Form Submission (Prevent Default)
+
+commit 6906c857700e59fa9f552f4a616463fa6d45b9c4
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 18:39:57 2025 +0100
+
+    Refactor: Switch to Email/Password Auth (CDN) & Comment Out Google
+
+commit cd18323bb9fe39b2a9a785466e0ebf58e66ae757
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 17:54:16 2025 +0100
+
+    Fix: Explicit Auth Persistence, Account Select Prompt, and Global Redirect Listener
+
+commit c9b1b7b9e09dfb88599e0c59fd3daebe7341f97d
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 17:45:11 2025 +0100
+
+    Cleanup: Remove trailing legacy code after CDN replacement
+
+commit e3b114e255aaa2a2a90c2f69a94c2ec6a9e5e394
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 17:44:14 2025 +0100
+
+    Refactor: Final Guaranteed CDN Auth (No Modules, No Polyfills)
+
+commit c118d6e0e66b2f452cc53ad7cb88a281fe9c46c1
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 17:26:07 2025 +0100
+
+    Cleanup: Remove Polyfill from index.html (Keys are in Module)
+
+commit e8239bcc03ac294645acb40c6d0eab7ebf413b78
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 17:24:34 2025 +0100
+
+    Fix: Hardcode Keys in Client Script to Prevent Process Env Error
+
+commit cfd25266713e45a9c7facac50e57162b4aa7b66d
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 17:14:40 2025 +0100
+
+    Refactor: Switch to Modular Auth with ImportMap and Polyfill
+
+commit 736464edc11352b533f392981817da92ab50eddd
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 17:08:59 2025 +0100
+
+    Fix: Overwrite Auth Section to Remove Legacy Error Messages
+
+commit 37b0fc9c21d1c70194ff2761e57c18d63f755d44
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 17:00:19 2025 +0100
+
+    Fix: Hardcode Firebase Keys in Frontend to bypass Config Fetch Error
+
+commit d5422e70b95905f4cc468b3c859d164d9ff57a19
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 16:46:09 2025 +0100
+
+    Debug: Enhance Config Error Logs
+
+commit 5605bb2c18c8a1b6f20c5ec96196bc489b842e33
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 16:40:19 2025 +0100
+
+    Cleanup: Remove unused module file
+
+commit eda733fe84933aae0a8636ae540d1fbaaa34ad1c
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 16:39:49 2025 +0100
+
+    Emergency Revert: Switch to CDN Global Auth (Stable)
+
+commit f8ec1dd761cb919e8965d2dab46261c8abee689a
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 16:32:22 2025 +0100
+
+    Fix: Critical Race Condition Resolve (Dynamic Import)
+
+commit a4edcc89b49947792a777d5c4abb4bda81d74037
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 16:27:36 2025 +0100
+
+    Feat: Complete Auth Flow (Frontend-Backend Sync + Dashboard Redirect)
+
+commit 70a915d70489d7da79b6480575b8ef026e611a1f
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 16:17:15 2025 +0100
+
+    Update: Finalize Button Wiring
+
+commit 7171058a60998c96dc72c94cc522d00e93e15cc4
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 16:16:41 2025 +0100
+
+    Update: Final Auth Code (Redirects & Placeholders)
+
+commit 6bb1b5506ebb872c0364c6eadb812ba10bf1e6b5
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 16:11:59 2025 +0100
+
+    Debug: Add console logs to login button
+
+commit 008c825b8956cb7e98985d0e83f16b457517bf66
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 16:03:45 2025 +0100
+
+    Fix: Proper Script Nesting and Button Wiring for Firebase Auth
+
+commit aa702ab1ed06f51f2c9002b1db77a4f44f9b42b0
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 15:50:15 2025 +0100
+
+    Refactor: Final Auth Rebuild with Polyfills

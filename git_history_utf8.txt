@@ -1,0 +1,20 @@
+﻿ebee13d Wed Dec 17 18:44:54 2025 Fix: Button Clickability & Form Submission (Prevent Default)
+6906c85 Wed Dec 17 18:39:57 2025 Refactor: Switch to Email/Password Auth (CDN) & Comment Out Google
+cd18323 Wed Dec 17 17:54:16 2025 Fix: Explicit Auth Persistence, Account Select Prompt, and Global Redirect Listener
+c9b1b7b Wed Dec 17 17:45:11 2025 Cleanup: Remove trailing legacy code after CDN replacement
+e3b114e Wed Dec 17 17:44:14 2025 Refactor: Final Guaranteed CDN Auth (No Modules, No Polyfills)
+c118d6e Wed Dec 17 17:26:07 2025 Cleanup: Remove Polyfill from index.html (Keys are in Module)
+e8239bc Wed Dec 17 17:24:34 2025 Fix: Hardcode Keys in Client Script to Prevent Process Env Error
+cfd2526 Wed Dec 17 17:14:40 2025 Refactor: Switch to Modular Auth with ImportMap and Polyfill
+736464e Wed Dec 17 17:08:59 2025 Fix: Overwrite Auth Section to Remove Legacy Error Messages
+37b0fc9 Wed Dec 17 17:00:19 2025 Fix: Hardcode Firebase Keys in Frontend to bypass Config Fetch Error
+d5422e7 Wed Dec 17 16:46:09 2025 Debug: Enhance Config Error Logs
+5605bb2 Wed Dec 17 16:40:19 2025 Cleanup: Remove unused module file
+eda733f Wed Dec 17 16:39:49 2025 Emergency Revert: Switch to CDN Global Auth (Stable)
+f8ec1dd Wed Dec 17 16:32:22 2025 Fix: Critical Race Condition Resolve (Dynamic Import)
+a4edcc8 Wed Dec 17 16:27:36 2025 Feat: Complete Auth Flow (Frontend-Backend Sync + Dashboard Redirect)
+70a915d Wed Dec 17 16:17:15 2025 Update: Finalize Button Wiring
+7171058 Wed Dec 17 16:16:41 2025 Update: Final Auth Code (Redirects & Placeholders)
+6bb1b55 Wed Dec 17 16:11:59 2025 Debug: Add console logs to login button
+008c825 Wed Dec 17 16:03:45 2025 Fix: Proper Script Nesting and Button Wiring for Firebase Auth
+aa702ab Wed Dec 17 15:50:15 2025 Refactor: Final Auth Rebuild with Polyfills

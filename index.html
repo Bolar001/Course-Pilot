@@ -753,15 +753,15 @@
 
         async function initFirebase() {
             try {
-                // Fetch config from server env
-                const res = await fetch('/api/config/firebase');
-                const firebaseConfig = await res.json();
-
-                if (!firebaseConfig.apiKey) {
-                    console.error("Firebase keys missing in server!");
-                    alert("System Config Error: Firebase Keys not found.");
-                    return;
-                }
+                // HARDCODED KEYS (Fixes "Keys not found" on Vercel)
+                const firebaseConfig = {
+                    apiKey: "AIzaSyDYz0dwwVCwIObqDUBpDHjoKKcyJ9Cx4B0",
+                    authDomain: "course-pilot-23c0c.firebaseapp.com",
+                    projectId: "course-pilot-23c0c",
+                    storageBucket: "course-pilot-23c0c.firebasestorage.app",
+                    messagingSenderId: "956312625248",
+                    appId: "1:956312625248:web:0878dec9c659c51e76e305"
+                };
 
                 firebase.initializeApp(firebaseConfig);
                 auth = firebase.auth();
@@ -779,13 +779,14 @@
 
             } catch (e) {
                 console.error("Firebase Init Error:", e);
+                alert("Firebase Error: " + e.message);
             }
         }
 
         async function handleGoogleLogin() {
             try {
+                // PC ONLY (Popup)
                 const result = await auth.signInWithPopup(provider);
-                // Auth state listener handles the rest
             } catch (error) {
                 console.error(error);
                 alert("Google Sign In Failed: " + error.message);

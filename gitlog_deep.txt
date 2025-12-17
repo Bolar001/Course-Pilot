@@ -1,0 +1,47 @@
+commit 811faad8b138484a471e3d9a0e60d64e26b27731
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 15:49:08 2025 +0100
+
+    Refactor: Clean Rebuild of Auth Flow (ImportMaps + Polyfills)
+
+commit 8936eb9f64979227f5c73e941d0bd0f77ebe6933
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 15:32:44 2025 +0100
+
+    Update: Replace firebaseLogin.js with user-provided version
+
+commit 1d156b902833641acd70e531692e26028eb96260
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 15:06:02 2025 +0100
+
+    Refactor: Add browser-compatible Firebase Auth helper
+
+commit f1891f4d6b7abb21e97a9d574d71daef48e9792a
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 14:51:48 2025 +0100
+
+    Fix: Add Mobile Google Login support (Redirect Flow)
+
+commit a9293387a8818711845603c474b0f4751fbf2909
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 13:07:45 2025 +0100
+
+    Feat: Upgrade to Production - MongoDB & Firebase Auth
+
+commit 27ba92249fdb819ab3130d66224b1acfe05555f7
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Wed Dec 17 11:22:56 2025 +0100
+
+    Fix: Restore Login Flow, Reorder Sidebar, Add Session Persistence
+
+commit 7f2ad0230106d118562cc6d859059b7af31bae85
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Tue Dec 16 17:08:45 2025 +0100
+
+    Deploy Ready (Secrets Removed)
+
+commit 1945867fdbf3935f2fe819f91cecd95b4c0d957c
+Author: Hormoborlargy <garubaridwanullah@gmail.com>
+Date:   Tue Dec 16 16:30:18 2025 +0100
+
+    Initial Course-Pilot
