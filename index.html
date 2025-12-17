@@ -1463,6 +1463,18 @@
             window.open(`https://wa.me/?text=${textToShare}`, '_blank');
         }
 
+            } catch (e) {
+            console.error(e);
+            loaderElem.style.display = 'none';
+
+            // Detailed Error for Debugging
+            let errorMsg = "Error connecting to Pilot.";
+            if (e.message) errorMsg += ` (${e.message})`;
+
+            addMessage('ai', `⚠️ <strong>Connection Failed</strong><br/><span style="font-size:0.8rem; color:red;">${errorMsg}</span>`);
+        }
+        }
+
         // --- CHAT LOGIC ---
         async function sendChatMessage() {
             const input = document.getElementById('chatInput');
@@ -1494,6 +1506,13 @@
                         textContext: uploadedTextContext
                     })
                 });
+
+                if (!res.ok) {
+                    // Handle HTTP Errors (e.g. 500, 404)
+                    const text = await res.text();
+                    throw new Error(`Server ${res.status}: ${text.substring(0, 100)}`);
+                }
+
                 const data = await res.json();
 
                 loaderElem.style.display = 'none';
@@ -1523,7 +1542,7 @@
             } catch (e) {
                 console.error(e);
                 loaderElem.style.display = 'none';
-                addMessage('ai', "Error connecting to Pilot.");
+                addMessage('ai', `⚠️ <strong>Error</strong><br/><span style="font-size:0.8rem; color:red;">${e.message}</span>`);
             }
         }
 
