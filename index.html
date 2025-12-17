@@ -970,7 +970,8 @@
             }
 
             try {
-                const res = await fetch('http://localhost:3000/api/ai', {
+                // Use relative path for production compatibility
+                const res = await fetch('/api/ai', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
