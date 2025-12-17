@@ -75,7 +75,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 0.75rem;
+            /* Navbar layout fix */
             z-index: 10;
+        }
+
+        /* Right-side nav container */
+        nav>div:last-child {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 0;
+            /* IMPORTANT for truncation */
         }
 
         .menu-toggle {
@@ -90,16 +101,21 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
+            /* reduced from large */
             font-weight: 700;
             color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.35rem;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .logo span {
             color: var(--text-main);
+            font-size: 1.1rem;
+            /* Plane emoji slightly smaller */
         }
 
         .badge {
@@ -112,10 +128,15 @@
         }
 
         #userBadge {
-            max-width: 160px;
+            max-width: 220px;
+            /* MORE space */
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            flex-shrink: 1;
             display: inline-block;
         }
 
@@ -482,6 +503,17 @@
             }
         }
 
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.1rem;
+            }
+
+            #userBadge {
+                max-width: 160px;
+                font-size: 0.8rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .menu-toggle {
                 display: block !important;
@@ -575,7 +607,7 @@
                 <span style="color: var(--primary);">Course</span>Pilot <span>✈️</span>
             </div>
         </div>
-        <div style="display:flex; gap:1rem; align-items:center;">
+        <div class="nav-right">
             <!-- Subject Selector -->
             <select id="subjectSelect"
                 style="padding:0.5rem; border-radius:0.5rem; border:1px solid #e2e8f0; font-family:inherit;"
