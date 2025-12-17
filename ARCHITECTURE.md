@@ -1,4 +1,4 @@
-# EduCoach AI - Technical Architecture & Roadmap
+# Course Pilot - Technical Architecture & Roadmap
 
 ## 🚀 Current State: The Hackathon Demo (Frontend Only)
 You currently have a **"Client-Side Simulation"**.
@@ -23,7 +23,7 @@ To make this fully functional with **Real Meta AI (Llama 3)** and the **WhatsApp
 1.  **User** uploads PDF in the Web App.
 2.  **Frontend** sends PDF to your **Backend**.
 3.  **Backend** sends text to **Meta Llama 3**.
-4.  **Llama 3** behaves as "EduCoach" and returns the summary/quiz.
+4.  **Llama 3** behaves as "Course Pilot" and returns the summary/quiz.
 5.  **Backend** sends the result back to the **Frontend** AND pushes it to the user's **WhatsApp**.
 
 ---

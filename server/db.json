@@ -20,5 +20,43 @@
     },
     "timetable": [],
     "quizHistory": []
+  },
+  "student@hackathon.demo": {
+    "profile": {
+      "name": "student",
+      "focusAreas": [],
+      "examMode": false,
+      "studyPace": "moderate",
+      "preferredTime": "morning"
+    },
+    "timetable": [
+      {
+        "day": "Mon",
+        "time": "9:00 AM",
+        "subject": "General",
+        "focus": "General Study"
+      }
+    ],
+    "quizHistory": [],
+    "subjects": {
+      "General": {
+        "isCore": false,
+        "lecturer": "Unknown",
+        "courseCode": "General",
+        "weaknesses": [],
+        "quizHistory": [],
+        "materials": [
+          {
+            "name": "Bipolar Junction Transistor lecture note_123327.pdf",
+            "preview": "\n\nBipolar Junction Transistor \nThe transistor was invented by a team of three scientists at Bell Laboratories, USA in 1947. \nAlthough the first transistor was not a bipolar junction device, yet it was the beginning of a \ntechnological revolution that is still continuing in the twenty first century. All of the complex \nelectronic devices and systems developed or in use today, are an outgrowth of early \ndevelopments in semiconductor transistors. \nThere are two basic types of transistors : (1) the bipolar junction transistor (BJT) and the \nfield-effect transistor (FET). The bipolar junction transistor is used in two broad areas of \nelectronics : (1) as a linear amplifier to boost an electrical signal and (2) as an electronic \nswitch. \nBasically, the bipolar junction transistor consists of two back-to- back P-N junctions \nmanufactured in a single piece of a semiconductor crystal. These two junctions give rise to \nthree regions called emitter, base and collector. As shown in Fig. 1 (a) junc",
+            "date": "2025-12-17T06:08:46.198Z"
+          },
+          {
+            "date": "2025-12-17T06:08:54.604Z"
+          }
+        ],
+        "lastActive": 1765953526911
+      }
+    }
   }
 }

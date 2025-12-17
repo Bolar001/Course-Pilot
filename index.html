@@ -446,38 +446,75 @@
     <!-- Login / Identity Modal -->
     <!-- Login / Identity Modal -->
     <div id="loginModal"
-        style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,1); z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--surface); z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center; backdrop-filter: blur(5px);">
 
-        <div style="width:100%; max-width:400px; padding:2rem; text-align:center;">
-            <div style="font-size:3.5rem; margin-bottom:1rem;">✈️</div>
-            <h1 style="font-size:2rem; font-weight:700; color:#1e293b; margin-bottom:0.5rem;">Course Pilot</h1>
-            <p style="color:#64748b; margin-bottom:2.5rem; font-size:1.1rem;">Your AI-Powered Academic Co-Pilot</p>
+        <div
+            style="width:100%; max-width:420px; padding:2.5rem; background:white; border-radius:1.5rem; box-shadow:var(--shadow-lg); text-align:center;">
 
-            <!-- Mock Google Button -->
-            <button onclick="mockGoogleLogin()"
-                style="width:100%; background:white; border:1px solid #cbd5e1; color:#1e293b; padding:0.75rem; border-radius:2rem; font-weight:500; display:flex; align-items:center; justify-content:center; gap:0.75rem; cursor:pointer; transition:all 0.2s; box-shadow:0 1px 2px 0 rgba(0,0,0,0.05);">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" style="width:20px; height:20px;"
-                    alt="G">
-                <span>Continue with Google</span>
-            </button>
-
+            <!-- Logo -->
             <div
-                style="margin: 1.5rem 0; font-size:0.85rem; color:#94a3b8; display:flex; align-items:center; gap:1rem;">
-                <div style="flex:1; height:1px; background:#e2e8f0;"></div>
-                <span>or continue with email</span>
-                <div style="flex:1; height:1px; background:#e2e8f0;"></div>
+                style="margin-bottom:2rem; font-size:2rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+                <span style="font-size:2.5rem;">✈️</span> Course<span style="color:var(--primary);">Pilot</span>
             </div>
 
-            <!-- Fallback Email -->
-            <form onsubmit="event.preventDefault(); login();" style="display:flex; flex-direction:column; gap:0.75rem;">
-                <input type="email" id="studentIdInput" placeholder="student@university.edu"
-                    style="width:100%; padding:0.875rem; border:1px solid #cbd5e1; border-radius:0.75rem; background:#f8fafc; font-size:0.95rem;">
-                <button type="submit" class="btn btn-primary" style="border-radius:0.75rem;">Sign In</button>
+            <h2 id="authTitle" style="font-size:1.5rem; font-weight:600; color:var(--text-main); margin-bottom:0.5rem;">
+                Create Account</h2>
+            <p id="authSubtitle" style="color:var(--text-muted); margin-bottom:2rem; font-size:0.95rem;">Join Course
+                Pilot to start your journey.</p>
+
+            <!-- Primary: Email Login -->
+            <form onsubmit="event.preventDefault(); login();"
+                style="display:flex; flex-direction:column; gap:1rem; margin-bottom:1.5rem;">
+                <div style="text-align:left;">
+                    <label
+                        style="display:block; font-size:0.85rem; font-weight:500; color:var(--text-main); margin-bottom:0.5rem;">Email
+                        Address</label>
+                    <input type="email" id="studentIdInput" placeholder="name@university.edu"
+                        style="width:100%; padding:0.75rem 1rem; border:1px solid var(--border); border-radius:0.75rem; background:#f8fafc; font-size:0.95rem; outline:none; transition:all 0.2s;">
+                </div>
+                <!-- Password (Mock) -->
+                <div style="text-align:left;">
+                    <label
+                        style="display:block; font-size:0.85rem; font-weight:500; color:var(--text-main); margin-bottom:0.5rem;">Password</label>
+                    <input type="password" placeholder="••••••••"
+                        style="width:100%; padding:0.75rem 1rem; border:1px solid var(--border); border-radius:0.75rem; background:#f8fafc; font-size:0.95rem; outline:none; transition:all 0.2s;">
+                </div>
+
+                <button type="submit" id="authButton" class="btn btn-primary"
+                    style="padding:1rem; border-radius:0.75rem; font-size:1rem; margin-top:0.5rem;">
+                    Sign Up
+                </button>
             </form>
 
-            <p style="margin-top:2rem; font-size:0.75rem; color:#94a3b8;">
-                By continuing, you agree to our Terms of Service and Privacy Policy.<br>
-                Protected by reCAPTCHA.
+            <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+                <div style="flex:1; height:1px; background:var(--border);"></div>
+                <span style="font-size:0.8rem; color:var(--text-muted);">or continue with</span>
+                <div style="flex:1; height:1px; background:var(--border);"></div>
+            </div>
+
+            <!-- Secondary: Social Login -->
+            <div style="display:grid; grid-template-columns: 1fr; gap:1rem;">
+                <button onclick="mockGoogleLogin()"
+                    style="width:100%; background:white; border:1px solid var(--border); color:var(--text-main); padding:0.75rem; border-radius:0.75rem; font-weight:500; display:flex; align-items:center; justify-content:center; gap:0.75rem; cursor:pointer; transition:all 0.2s; font-size:0.9rem;">
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" style="width:20px; height:20px;"
+                        alt="G">
+                    Google
+                </button>
+            </div>
+
+            <!-- Toggle Mode -->
+            <p style="font-size:0.9rem; color:var(--text-main);">
+                <span id="authFooter">Already have an account?</span>
+                <a href="#" onclick="toggleAuthMode()"
+                    style="color:var(--primary); text-decoration:none; font-weight:600; margin-left:0.25rem;">
+                    <span id="authToggleAction">Sign In</span>
+                </a>
+            </p>
+
+            <p style="margin-top:2rem; font-size:0.75rem; color:var(--text-muted); line-height:1.5;">
+                By continuing, you agree to our <a href="#"
+                    style="color:var(--primary); text-decoration:none;">Terms</a> and <a href="#"
+                    style="color:var(--primary); text-decoration:none;">Privacy Policy</a>.
             </p>
         </div>
     </div>
@@ -491,10 +528,7 @@
             <select id="subjectSelect"
                 style="padding:0.5rem; border-radius:0.5rem; border:1px solid #e2e8f0; font-family:inherit;"
                 onchange="changeSubject()">
-                <option value="General">Select Subject...</option>
-                <option value="MTH101">MTH101 [Core] - Calculus</option>
-                <option value="ELE202">ELE202 [Core] - Circuit Theory</option>
-                <option value="CSC304">CSC304 [Elective] - Algorithms</option>
+                <option value="General">General [Default]</option>
                 <option value="ADD_NEW">+ Add New Subject...</option>
             </select>
             <div id="userBadge" style="font-size:0.85rem; font-weight:600;">Guest</div>
@@ -542,6 +576,8 @@
                 </div>
             </div>
 
+
+
             <!-- ANALYTICS: Performance Chart -->
             <div
                 style="margin-bottom:1rem; background:white; padding:1rem; border-radius:0.75rem; border:1px solid #e2e8f0;">
@@ -571,17 +607,19 @@
 
             <div>
                 <div class="section-title">1. Upload Materials</div>
-                <div class="upload-zone" id="dropZone">
-                    <div class="upload-icon">📄</div>
-                    <div class="upload-text">Notes / Past Questions</div>
-                    <div class="upload-subtext">PDFs, Images</div>
-                    <input type="file" id="fileInput" accept=".pdf, .jpg, .png">
+                <!-- Lesson Title Input -->
+                <div style="margin-bottom:0.5rem;">
+                    <input type="text" id="lessonTitle" placeholder="Lesson Title (e.g. Lesson 1: Forces)"
+                        style="width:100%; padding:0.5rem; border:1px solid #cbd5e1; border-radius:0.5rem; font-size:0.9rem;">
                 </div>
-                <!-- Handwritten Button (Moved Outside) -->
-                <button onclick="handleHandwrittenUpload()"
-                    style="width:100%; margin-top:0.5rem; padding:0.75rem; font-size:0.85rem; background:#fff; border:1px solid #cbd5e1; border-radius:0.5rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; color:#475569; font-weight:500;">
-                    ✍️ Upload Handwritten Note (Beta)
-                </button>
+
+                <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">☁️</div>
+                    <div class="upload-text">Click to upload lecture notes</div>
+                    <div class="upload-subtext">PDFs, Images (JPG/PNG)</div>
+                    <input type="file" id="fileInput" accept=".pdf, .jpg, .jpeg, .png">
+                </div>
+
                 <div class="file-status" id="fileStatus">
                     <span class="file-icon">✓</span>
                     <span id="fileName">lecture_notes.pdf</span>
@@ -600,8 +638,9 @@
                 </div>
             </div>
 
+            <!-- AI Actions (Moved Down as Requested) -->
             <div>
-                <div class="section-title">2. AI Actions</div>
+                <div class="section-title">2. Actions</div>
                 <div class="actions">
                     <button class="btn btn-primary" onclick="handleAction('summarize')" id="btnSum">
                         ✨ Summarize Content
@@ -614,6 +653,9 @@
                     </button>
                 </div>
             </div>
+
+
+
 
             <div style="margin-top: auto;">
                 <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">
@@ -631,7 +673,8 @@
                         <div class="meta-logo"></div> Course Pilot
                     </div>
                     <div class="ai-content">
-                        <p>Welcome to the Cockpit! ✈️ Upload your course materials, and I will navigate you through the
+                        <p>Welcome to the Cockpit! ✈️ Upload your course materials, and I will navigate you through
+                            the
                             turbulence of your syllabus.</p>
                     </div>
                 </div>
@@ -660,15 +703,42 @@
 
     <!-- Import Marked.js for Markdown Parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
     <script>
-        // --- CONFIGURATION ---
+        // --- CONFIGURATION & GLOBALS ---
         const USE_SERVER = true;
-        let uploadedTextContext = "";
         let currentUser = "guest@edu.com";
+        let isSignUp = true; // Default to Sign Up as requested
+
+        // Academic State
         let currentSubject = "General";
         let isCurrentSubjectCore = false;
-        let currentLecturer = "Unknown"; // NEW: Lecturer Awareness
+        let currentLecturer = "Unknown";
+        let uploadedTextContext = "";
+        let currentTimetableData = [];
+
+        // Toggle Sign In / Sign Up
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            const title = document.getElementById('authTitle');
+            const sub = document.getElementById('authSubtitle');
+            const btn = document.getElementById('authButton');
+            const footer = document.getElementById('authFooter');
+            const action = document.getElementById('authToggleAction');
+
+            if (isSignUp) {
+                title.textContent = "Create Account";
+                sub.textContent = "Start your academic journey today.";
+                btn.textContent = "Sign Up";
+                footer.textContent = "Already have an account?";
+                action.textContent = "Sign In";
+            } else {
+                title.textContent = "Welcome back";
+                sub.textContent = "Enter your details to access your workspace.";
+                btn.textContent = "Sign In";
+                footer.textContent = "Don't have an account?";
+                action.textContent = "Sign Up";
+            }
+        }
 
         // --- AUTH MOCK ---
         function mockGoogleLogin() {
@@ -716,12 +786,26 @@
 
                 addMessage('ai', welcomeMsg);
 
+                // Save Session
+                localStorage.setItem('coursePilotUser', email);
+
                 // Init Chart
                 initCharts();
             } else {
                 alert("Please enter a valid email to board.");
             }
         }
+
+        // Auto-Login on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('coursePilotUser');
+            if (savedUser) {
+                document.getElementById('studentIdInput').value = savedUser;
+                login();
+            }
+        });
+
+
 
         function changeSubject() {
             const select = document.getElementById('subjectSelect');
@@ -768,7 +852,27 @@
                 updateSubjectDisplay();
                 addMessage('ai', `<p>Focus switched to <strong>${currentSubject}</strong>.</p>`);
 
+                // ISOLATION: Clear Chat and Context
+                const chatContainer = document.getElementById('chatHistory');
+                if (chatContainer) chatContainer.innerHTML = '';
+
+                uploadedTextContext = "";
+
+                // Fetch Materials for this subject
+                fetchMaterialsForSubject(currentSubject);
+
+                // getAIResponse('init'); // Don't auto-init to keep it clean, or keep it if desired. Let's keep it.
                 getAIResponse('init');
+            }
+        }
+
+        async function fetchMaterialsForSubject(subId) {
+            try {
+                const res = await fetch(`http://localhost:3000/api/materials/${currentUser}/${subId}`);
+                const data = await res.json();
+                renderMaterialLibrary(data.materials);
+            } catch (e) {
+                console.error("Failed to fetch specific materials", e);
             }
         }
 
@@ -798,33 +902,8 @@
             } catch (e) { console.error(e); }
         }
 
-        // --- NEW: Handwritten Notes ---
-        async function handleHandwrittenUpload() {
-            // Simulate file click
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = async (e) => {
-                if (e.target.files[0]) {
-                    const file = e.target.files[0];
-                    addMessage('user', `✍️ Uploading Handwritten Note: ${file.name}`);
 
-                    const formData = new FormData();
-                    formData.append('file', file);
 
-                    try {
-                        const res = await fetch('http://localhost:3000/api/upload_handwritten', { method: 'POST', body: formData });
-                        const data = await res.json();
-                        addMessage('ai', `<p>Processed Note: ${data.textPreview}</p>`);
-                        uploadedTextContext = data.textPreview; // Set as context
-                    } catch (e) {
-                        console.error(e);
-                        addMessage('ai', `<p>⚠️ <strong>Upload Failed:</strong> Connection error. Ensure server is running.</p>`);
-                    }
-                }
-            };
-            input.click();
-        }
 
         // --- API HANDLERS ---
         async function uploadFileToServer(file) {
@@ -833,7 +912,12 @@
             formData.append('file', file);
             // Add metadata for memory
             formData.append('userId', currentUser);
+            formData.append('userId', currentUser);
             formData.append('subjectId', currentSubject);
+
+            // Add Lesson Title
+            const lessonTitle = document.getElementById('lessonTitle').value;
+            formData.append('lessonTitle', lessonTitle);
 
             try {
                 const res = await fetch('http://localhost:3000/api/upload', { method: 'POST', body: formData });
@@ -951,7 +1035,8 @@
         }
 
         // Global State for Timetable
-        let currentTimetableData = [];
+        // Global State for Timetable
+        // let currentTimetableData = []; // Removed duplicate
 
         // --- NEW: Render Material Library ---
         function renderMaterialLibrary(list) {
@@ -1345,7 +1430,7 @@
         // Share
         function shareToWhatsApp(type, content) {
             const rawText = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-            const textToShare = encodeURIComponent(`*EduCoach AI* \n\n${rawText}\n\n_Sent via EduCoach_`);
+            const textToShare = encodeURIComponent(`*Course Pilot* \n\n${rawText}\n\n_Sent via Course Pilot_`);
             window.open(`https://wa.me/?text=${textToShare}`, '_blank');
         }
 

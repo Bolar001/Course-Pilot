@@ -1,4 +1,4 @@
-# Implementation Plan: EduCoach AI Real Backend
+# Implementation Plan: Course Pilot Real Backend
 
 ## Goal
 Transition from a simulation to a working full-stack application connecting:

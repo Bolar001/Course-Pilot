@@ -1,4 +1,4 @@
-# Deployment Guide: EduCoach AI
+# Deployment Guide: Course Pilot
 
 Your app consists of two parts. You must deploy them separately.
 
@@ -15,7 +15,7 @@ We recommend **Render.com** (it's free and easy).
     *   **Build Command**: `npm install`
     *   **Start Command**: `node server.js`
     *   **Environment Variables**: Add your `AI_API_KEY` here.
-3.  **Copy the URL**: render will give you a URL like `https://educoach-backend.onrender.com`.
+3.  **Copy the URL**: render will give you a URL like `https://course-pilot-backend.onrender.com`.
 
 ## Part 2: Connect Frontend to Backend
 1.  Open `index.html` on your computer.
@@ -26,7 +26,7 @@ We recommend **Render.com** (it's free and easy).
     *(I will add this variable in my next edit so it's easy to find)*
 3.  Change it to your new Render URL:
     ```javascript
-    const API_BASE_URL = 'https://educoach-backend.onrender.com';
+    const API_BASE_URL = 'https://course-pilot-backend.onrender.com';
     ```
 
 ## Part 3: Deploy Frontend (HTML)
@@ -35,7 +35,7 @@ We recommend **Netlify** or **Vercel**.
 1.  **Drag and Drop**:
     *   Go to Netlify Drop (app.netlify.com/drop).
     *   Drag your `index.html` (and any assets) folders there.
-2.  **Done!** You will get a public link like `https://educoach-demo.netlify.app`.
+2.  **Done!** You will get a public link like `https://course-pilot-demo.netlify.app`.
 
 ---
 
