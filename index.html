@@ -424,8 +424,9 @@
             .sidebar {
                 padding: 1rem;
                 height: auto;
-                max-height: 25vh;
-                /* Limit sidebar height on mobile */
+                max-height: 40vh;
+                /* Increased from 25vh to show more actions */
+                /* limit height so it doesn't eat the whole screen */
                 overflow-y: auto;
                 border-bottom: 2px solid var(--border);
                 flex-shrink: 0;
@@ -439,6 +440,8 @@
                 height: auto;
                 min-height: 0;
                 /* Allow flex scrolling */
+                overflow-y: auto;
+                /* Ensure scrolling works */
             }
 
             .messages {
