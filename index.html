@@ -1577,6 +1577,17 @@
 
                 loaderElem.style.display = 'none';
 
+                // Handle Specific Backend Errors
+                if (data.error) {
+                    addMessage('ai', `⚠️ <strong>Error:</strong> ${data.error}`);
+                    return;
+                }
+
+                if (!data.result) {
+                    addMessage('ai', "⚠️ Server returned an empty response. Please check logs.");
+                    return;
+                }
+
                 // Render Response
                 addMessage('ai', data.result);
                 if (window.MathJax) setTimeout(() => {
