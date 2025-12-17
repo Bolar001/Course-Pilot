@@ -45,7 +45,16 @@
             box-sizing: border-box;
         }
 
+        html,
         body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            min-height: 100dvh;
+            /* Fix mobile viewport bug */
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
@@ -414,51 +423,52 @@
         /* Responsive */
         @media (max-width: 768px) {
 
-            /* Keep grid — do NOT collapse layout */
             main {
                 display: grid;
-                grid-template-columns: 30% 70%;
-                height: calc(100vh - 70px);
+                grid-template-columns: 25% 75%;
+                height: calc(100dvh - 64px);
+                /* navbar height */
+                width: 100%;
                 overflow: hidden;
             }
 
-            /* Sidebar stays scrollable */
             .sidebar {
-                padding: 1rem;
-                overflow-y: auto;
                 height: 100%;
-                border-right: 1px solid var(--border);
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding: 1rem;
+                min-width: 0;
             }
 
-            /* Chat takes majority of space */
             .chat-area {
+                height: 100%;
                 display: flex;
                 flex-direction: column;
-                height: 100%;
                 overflow: hidden;
+                min-width: 0;
             }
 
-            /* Messages scroll properly */
             .messages {
                 flex: 1;
                 overflow-y: auto;
+                overflow-x: hidden;
                 padding: 1rem;
                 padding-bottom: 5rem;
             }
 
-            /* Input stays fixed at bottom */
             .chat-input-area {
+                flex-shrink: 0;
                 position: sticky;
                 bottom: 0;
                 background: #fff;
-                z-index: 5;
+                z-index: 10;
             }
 
-            /* Reduce padding to save space */
             nav {
+                height: 64px;
                 padding: 0.75rem 1rem;
+                flex-shrink: 0;
             }
-
         }
     </style>
 </head>
