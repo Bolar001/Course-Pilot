@@ -78,6 +78,17 @@
             z-index: 10;
         }
 
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            /* User's reset might affect this, ensure none */
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            margin-right: 1rem;
+        }
+
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
@@ -544,8 +555,11 @@
     </div>
 
     <nav>
-        <div class="logo">
-            <span style="color: var(--primary);">Course</span>Pilot <span>✈️</span>
+        <div style="display:flex; align-items:center;">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="logo">
+                <span style="color: var(--primary);">Course</span>Pilot <span>✈️</span>
+            </div>
         </div>
         <div style="display:flex; gap:1rem; align-items:center;">
             <!-- Subject Selector -->
@@ -732,6 +746,10 @@
         const USE_SERVER = true;
         let currentUser = "guest@edu.com";
         let isSignUp = true; // Default to Sign Up as requested
+
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-open');
+        }
 
         // Academic State
         let currentSubject = "General";
