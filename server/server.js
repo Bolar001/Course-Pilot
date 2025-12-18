@@ -292,23 +292,65 @@ app.get('/api/materials/:userId/:subjectId', async (req, res) => {
 
 // 3. AI / Quiz / Chat
 app.post('/api/chat', async (req, res) => {
+    // HARDENING: DB failure must not stop the chat.
+    let user = null;
+    let sub = null;
+    let nextAction = null;
+    let dbError = null;
+
+    const { message, userId, subjectId } = req.body;
+
+    // 1. Try to read DB (Non-blocking)
     try {
         await connectToDatabase();
-        const { message, userId, subjectId } = req.body;
-        // Logic for chat...
-        const result = await generateAIResponse(message, "Answer this question like a tutor.");
-        const nextAction = await decideNextAction(userId, subjectId);
+        // Only fetch user context if we have IDs
+        if (userId) {
+            user = await getUser(userId);
+            if (subjectId && user.subjects) {
+                sub = user.subjects.get(subjectId);
+            }
+        }
 
-        const user = await getUser(userId);
-        const sub = user.subjects.get(subjectId);
-
-        res.json({
-            result,
-            suggestion: nextAction,
-            weaknesses: sub ? sub.weaknesses : []
-        });
+        // Decide action only if DB worked
+        if (user && subjectId) {
+            nextAction = await decideNextAction(userId, subjectId).catch(err => {
+                console.warn("Pilot Warning: decideNextAction failed", err.message);
+                return null;
+            });
+        }
     } catch (e) {
-        res.status(500).json({ error: e.message });
+        console.error("Pilot DB Warning: Context skipped due to DB error:", e.message);
+        dbError = e;
+        // Proceed without context
+    }
+
+    try {
+        // 2. ALWAYS call Llama (Core)
+        // If DB failed, we just don't have user context, but we still answer.
+        // We can inject a small system note if DB failed so Llama knows.
+        let promptContext = "Answer this question like a tutor.";
+        if (dbError) {
+            promptContext += " (Note: Persistent memory is currently unavailable, so you don't know the student's name or past subjects. Just answer the query helpfully.)";
+        }
+
+        const result = await generateAIResponse(message, promptContext);
+
+        // 3. Return Response (Guaranteed)
+        res.json({
+            result: result || "I'm ready to help. Please ask your question again.", // Fallback if Llama returns null (unlikely)
+            suggestion: nextAction || null,
+            weaknesses: sub ? sub.weaknesses : [] // Default to empty if no DB
+        });
+
+    } catch (finalError) {
+        // This catches strictly Llama failures or critical code errors
+        console.error("Pilot Critical Error:", finalError);
+        // STANDBY MODE: Even if everything explodes, return a friendly JSON.
+        res.status(200).json({
+            reply: "I’m having trouble processing that right now. Please ask again in a moment.",
+            result: "I’m having trouble processing that right now. Please ask again in a moment.", // Double field to be safe for frontend
+            error: null // Hide error specific from UI to prevent stalling
+        });
     }
 });
 
