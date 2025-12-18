@@ -10,13 +10,40 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// --- MONGODB CONNECTION ---
-if (!process.env.MONGO_URI) {
-    console.warn("⚠️ WARNING: MONGO_URI is missing. Server will default to temporary memory storage (changes won't persist on restart).");
+// --- MONGODB CONNECTION (Serverless Cached Pattern) ---
+let cached = global.mongoose;
+
+if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null };
 }
-mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/course_pilot_temp")
-    .then(() => console.log("✅ MongoDB Connected"))
-    .catch(err => console.error("❌ MongoDB Connection Error:", err));
+
+async function connectToDatabase() {
+    if (cached.conn) {
+        return cached.conn;
+    }
+
+    if (!cached.promise) {
+        const opts = {
+            bufferCommands: false, // Turn off buffering to fail fast on errors
+        };
+
+        const uri = process.env.MONGO_URI || "mongodb://localhost:27017/course_pilot_temp";
+
+        cached.promise = mongoose.connect(uri, opts).then((mongoose) => {
+            console.log("✅ MongoDB Connected (New Instance)");
+            return mongoose;
+        });
+    }
+
+    try {
+        cached.conn = await cached.promise;
+    } catch (e) {
+        cached.promise = null;
+        throw e;
+    }
+
+    return cached.conn;
+}
 
 // --- SCHEMAS ---
 const MaterialSchema = new mongoose.Schema({
@@ -211,6 +238,7 @@ async function generateAIResponse(text, promptType) {
 // --- ENDPOINTS ---
 
 // 0. Config Endpoint (For Frontend to get Firebase Keys)
+// 0. Config Endpoint (For Frontend to get Firebase Keys)
 app.get('/api/config/firebase', (req, res) => {
     res.json({
         apiKey: process.env.FIREBASE_API_KEY,
@@ -224,6 +252,7 @@ app.get('/api/config/firebase', (req, res) => {
 
 // 1. Upload
 app.post('/api/upload', upload.single('file'), async (req, res) => {
+    await connectToDatabase();
     try {
         if (!req.file) return res.status(400).json({ error: 'No file' });
         const { userId, subjectId, lessonTitle } = req.body;
@@ -254,6 +283,7 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 
 // 2. Fetch Materials
 app.get('/api/materials/:userId/:subjectId', async (req, res) => {
+    await connectToDatabase();
     const { userId, subjectId } = req.params;
     const user = await getUser(userId);
     const sub = user.subjects ? user.subjects.get(subjectId) : null;
@@ -263,6 +293,7 @@ app.get('/api/materials/:userId/:subjectId', async (req, res) => {
 // 3. AI / Quiz / Chat
 app.post('/api/chat', async (req, res) => {
     try {
+        await connectToDatabase();
         const { message, userId, subjectId } = req.body;
         // Logic for chat...
         const result = await generateAIResponse(message, "Answer this question like a tutor.");
@@ -284,6 +315,7 @@ app.post('/api/chat', async (req, res) => {
 app.post('/api/ai', async (req, res) => {
     // Shared endpoint for Summary/Explain/Quiz
     try {
+        await connectToDatabase();
         const { type, text, userId, subjectId, focusTopic } = req.body;
         const result = await generateAIResponse(text, type + (focusTopic ? ` Focus: ${focusTopic}` : ""));
 
@@ -301,6 +333,7 @@ app.post('/api/ai', async (req, res) => {
 
 // 4. Report Quiz
 app.post('/api/report_quiz', async (req, res) => {
+    await connectToDatabase();
     const { userId, subjectId, score, focusTopic } = req.body;
     await updateMemory(userId, subjectId, 'quiz_result', { score, focusTopic });
     const user = await getUser(userId);
@@ -310,6 +343,7 @@ app.post('/api/report_quiz', async (req, res) => {
 // 5. Timetable & Exam Mode
 app.post('/api/update_timetable', async (req, res) => {
     const { userId, newTimetable } = req.body;
+    await connectToDatabase();
     const user = await getUser(userId);
     user.timetable = newTimetable;
     await user.save();
@@ -318,6 +352,7 @@ app.post('/api/update_timetable', async (req, res) => {
 
 app.post('/api/toggle_exam', async (req, res) => {
     const { userId, enabled } = req.body;
+    await connectToDatabase();
     const user = await getUser(userId);
     user.profile.examMode = enabled;
     await user.save();
