@@ -1081,10 +1081,11 @@
 
                 return data;
             } catch (e) {
-                console.error(e);
+                console.error("FULL API ERROR:", e);
                 if (type !== 'init' && loaderElem) loaderElem.style.display = 'none';
-                return { result: "Error connecting to AI Backend." };
+                return { result: `Connection Error: ${e.message || "Unknown Pilot Error"}` };
             }
+
         }
 
         function renderWeaknesses(weaknesses) {
